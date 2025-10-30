@@ -64,5 +64,6 @@ model especialidades {
   id                     Int                      @id @default(autoincrement())
   nome                   String                   @unique @db.VarChar(100)
   valor                  Int
+  duracao_minutos        Int
   barbeiro_especialidade barbeiro_especialidade[]
 }
