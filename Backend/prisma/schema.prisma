@@ -63,5 +63,6 @@ model clientes {
 model especialidades {
   id                     Int                      @id @default(autoincrement())
   nome                   String                   @unique @db.VarChar(100)
+  valor                  Int
   barbeiro_especialidade barbeiro_especialidade[]
 }
