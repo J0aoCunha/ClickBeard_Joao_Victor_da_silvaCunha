@@ -1,8 +1,14 @@
-import type { Prisma } from "@prisma/client";
+import type { barbeiro_especialidade, Prisma } from "@prisma/client";
 import type { IBarberSpecialtiesRepository } from "../DTObarberSpecialties";
 import { prisma } from "../../lib/prisma";
 
 class PrismaBarberSpecialtiesRepository implements IBarberSpecialtiesRepository {
+
+ async findById(id: number): Promise<barbeiro_especialidade | null> {
+    return prisma.barbeiro_especialidade.findUnique({
+      where: { id }
+    });
+  }
 
   async listBarberBySpecialty(barberId: number){
     const specialties = await prisma.barbeiro_especialidade.findMany({
@@ -52,3 +58,5 @@ class PrismaBarberSpecialtiesRepository implements IBarberSpecialtiesRepository 
     })
   }
 }
+
+export { PrismaBarberSpecialtiesRepository }
