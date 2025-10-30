@@ -4,9 +4,14 @@ import { prisma } from "../../lib/prisma";
 
 class PrismaBarberRespository implements IBarberRepository {
 
- async create(data: Prisma.barbeirosUncheckedCreateInput){
+ async create(data: Prisma.barbeirosCreateInput, adminId: number) {
     const barber = await prisma.barbeiros.create({
-      data
+      data: {
+        ...data,
+        administradores:{
+          connect: { id: adminId }
+        }
+      }
     })
 
     return barber
