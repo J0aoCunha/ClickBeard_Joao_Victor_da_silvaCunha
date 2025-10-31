@@ -17,13 +17,13 @@ export async function createAppointmentController(request: FastifyRequest, reply
 
     try {
         const createAppointmentUseCase = makeCreateAppointmentUseCase();
-        await createAppointmentUseCase.execute({ cliente_id, barbeiro_especialidade_id, data, hora });
+        const { appointment } = await createAppointmentUseCase.execute({ cliente_id, barbeiro_especialidade_id, data, hora });
+        
+        return reply.status(201).send({ appointment });
     } catch (error) {
         if (error instanceof Error) {
             return reply.status(409).send({ message: error.message });
         }
         throw error;
     }
-
-    return reply.status(201).send();
 }

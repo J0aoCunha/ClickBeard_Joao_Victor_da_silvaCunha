@@ -30,8 +30,22 @@ export class CreateAppointmentUseCase {
   }: CreateAppointmentRequest): Promise<CreateAppointmentResponse> {
     // Parsear data e hora manualmente para evitar problemas de fuso horário
     // Formato esperado: data = "YYYY-MM-DD", hora = "HH:MM"
-    const [ano, mes, dia] = data.split('-').map(Number);
-    const [horas, minutos] = hora.split(':').map(Number);
+    const dataParts = data.split('-').map(Number);
+    const horaParts = hora.split(':').map(Number);
+    
+    if (dataParts.length !== 3 || horaParts.length !== 2) {
+      throw new Error('Formato inválido. Use: data "YYYY-MM-DD" e hora "HH:MM"');
+    }
+    
+    const ano = dataParts[0];
+    const mes = dataParts[1];
+    const dia = dataParts[2];
+    const horas = horaParts[0];
+    const minutos = horaParts[1];
+    
+    if (!ano || !mes || !dia || horas === undefined || minutos === undefined) {
+      throw new Error('Data ou hora inválida. Verifique os valores fornecidos.');
+    }
     
     // Criar data no horário local (não UTC) para evitar problemas de conversão
     const dateTime = new Date(ano, mes - 1, dia, horas, minutos, 0, 0);

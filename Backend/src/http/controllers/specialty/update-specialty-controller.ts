@@ -8,23 +8,21 @@ export async function updateSpecialtyController(request: FastifyRequest, reply: 
         id: z.string().transform(Number)
     });
     const updateSpecialtyBodySchema = z.object({
-        name: z.string().optional(),
-        description: z.string().optional(),
-        duration_minutes: z.number().optional(),
+        value: z.number().int("Valor deve ser um número inteiro").positive("Valor deve ser positivo"),
     });
 
     const { id } = updateSpecialtyParamsSchema.parse(request.params);
-    const data = updateSpecialtyBodySchema.parse(request.body);
+    const { value } = updateSpecialtyBodySchema.parse(request.body);
 
     try {
         const updateSpecialtyUseCase = makeUpdateSpecialtyUseCase();
-        await updateSpecialtyUseCase.execute({ specialtyId: id, data });
+        const { specialty } = await updateSpecialtyUseCase.execute({ id, valor: value });
+        
+        return reply.status(200).send({ specialty });
     } catch (error) {
         if (error instanceof Error) {
             return reply.status(404).send({ message: error.message });
         }
         throw error;
     }
-
-    return reply.status(204).send();
 }

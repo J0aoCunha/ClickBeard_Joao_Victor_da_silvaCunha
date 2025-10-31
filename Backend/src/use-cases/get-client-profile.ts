@@ -40,13 +40,16 @@ export class GetClientProfileUseCase {
     return {
       nome: client.nome,
       email: client.email,
-      agendamentos: client.agendamentos.map(appointment => ({
-        id: appointment.id,
-        data_horario_formatada: this.formatDate(appointment.data_horario),
-        status: appointment.status || 'ativo',
-        especialidade: appointment.barbeiro_especialidade?.especialidades?.nome || 'Não informado',
-        barbeiro: appointment.barbeiro_especialidade?.barbeiros?.nome || 'Não informado',
-      }))
+      agendamentos: client.agendamentos.map(appointment => {
+        const barbeiroEspecialidade = (appointment as any).barbeiro_especialidade;
+        return {
+          id: appointment.id,
+          data_horario_formatada: this.formatDate(appointment.data_horario),
+          status: appointment.status || 'ativo',
+          especialidade: barbeiroEspecialidade?.especialidades?.nome || 'Não informado',
+          barbeiro: barbeiroEspecialidade?.barbeiros?.nome || 'Não informado',
+        };
+      })
     };
   }
 }
