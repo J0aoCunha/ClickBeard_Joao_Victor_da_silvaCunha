@@ -17,6 +17,18 @@ class PrismaAppointmentRepository implements IAppointmentRepository {
     return appointments;
   }
 
+  async findByClienteId(cliente_id: number){
+    const appointments = await prisma.agendamentos.findMany({
+      where: {
+        cliente_id
+      },
+      orderBy: {
+        data_horario: 'desc'
+      }
+    });
+    return appointments;
+  }
+
   async findById(id: number){
 
     const appointment = await prisma.agendamentos.findUnique({

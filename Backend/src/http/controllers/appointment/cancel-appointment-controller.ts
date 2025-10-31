@@ -10,15 +10,30 @@ export async function cancelAppointmentController(request: FastifyRequest, reply
 
     const { appointment_id } = cancelAppointmentParamsSchema.parse(request.params);
 
+    // Pegar cliente_id do token JWT
+    const cliente_id = Number(request.user.sub);
+    const isAdmin = (request.user as any).isAdmin || false;
+
     try {
         const cancelAppointmentUseCase = makeCancelAppointmentUseCase();
-        await cancelAppointmentUseCase.execute({ appointment_id });
+        const { appointment } = await cancelAppointmentUseCase.execute({ 
+            appointment_id, 
+            cliente_id, 
+            isAdmin 
+        });
+
+        return reply.status(200).send({ appointment });
     } catch (error) {
         if (error instanceof Error) {
-            return reply.status(409).send({ message: error.message });
+            // 403 se não tiver permissão, 409 para conflitos, 400 para outros erros
+            if (error.message.includes('permissão')) {
+                return reply.status(403).send({ message: error.message });
+            }
+            if (error.message.includes('já está cancelado') || error.message.includes('não encontrado')) {
+                return reply.status(409).send({ message: error.message });
+            }
+            return reply.status(400).send({ message: error.message });
         }
         throw error;
     }
-
-    return reply.status(204).send();
 }

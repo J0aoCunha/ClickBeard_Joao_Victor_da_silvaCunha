@@ -6,10 +6,11 @@ import { createAppointmentController } from "./create-appointment-controller";
 import { listAppointmentsController } from "./list-appointments-controller";
 import { verifyJWT } from "../../middlewares/verify-jwt";
 import { verifyAdmin } from "../../middlewares/verify-admin";
+import { verifyJWTOrAdmin } from "../../middlewares/verify-jwt-or-admin";
 
 export async function appointmentRoutes(app: FastifyInstance) {
-    app.patch("/appointment/:appointment_id/cancel", cancelAppointmentController);
+    app.patch("/appointment/:appointment_id/cancel", { preHandler: [verifyJWTOrAdmin] }, cancelAppointmentController);
     app.post("/appointment/connect-barber-specialty", { preHandler: [verifyAdmin] }, connectBarberSpecialtyController);
     app.post("/appointment", { preHandler: [verifyJWT] }, createAppointmentController);
-    app.get("/appointment", listAppointmentsController);
+    app.get("/appointment", { preHandler: [verifyJWT] }, listAppointmentsController);
 }
