@@ -1,9 +1,9 @@
+import { PrismaBarberRespository } from "../../repositories/prisma-repositories/prisma-barber-repository";
+import { SearchBarbersUseCase } from "../search-barbers";
 
-import { PrismaBarberRepository } from "@/repositories/prisma-repositories/prisma-barber-repository";
-import { SearchBarbersUseCase } from "../../search-barbers";
 
 export function makeSearchBarbersUseCase() {
-    const prismaBarberRepository = new PrismaBarberRepository();
+    const prismaBarberRepository = new PrismaBarberRespository();
     const searchBarbersUseCase = new SearchBarbersUseCase(prismaBarberRepository);
 
     return searchBarbersUseCase;
