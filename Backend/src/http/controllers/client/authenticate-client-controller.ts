@@ -15,11 +15,15 @@ export async function authenticateClientController(request: FastifyRequest, repl
         const authenticateClientUseCase = makeAuthenticateClientUseCase();
         const { client } = await authenticateClientUseCase.execute({ email, password });
 
+        // Gera access token
         const token = await reply.jwtSign({}, {
             sign: {
                 sub: client.id.toString(),
             }
         });
+
+        // Gera e define refresh token em cookie
+        await reply.setRefreshToken(client.id.toString());
 
         return reply.status(200).send({ token });
 

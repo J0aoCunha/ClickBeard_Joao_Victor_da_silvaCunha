@@ -1,4 +1,5 @@
 import fastify from "fastify";
+import type { FastifyReply } from "fastify";
 import { adminRoutes } from "./http/controllers/admin/routes";
 import { clientRoutes } from "./http/controllers/client/routes";
 import { barberRoutes } from "./http/controllers/barber/routes";
@@ -6,6 +7,7 @@ import { specialtyRoutes } from "./http/controllers/specialty/routes";
 import { appointmentRoutes } from "./http/controllers/appointment/routes";
 import fastifyJwt from "@fastify/jwt";
 import fastifyCors from "@fastify/cors";
+import fastifyCookie from "@fastify/cookie";
 import { env } from "./env";
 import { ZodError } from "zod";
 
@@ -15,6 +17,8 @@ app.register(fastifyCors, {
   origin: true, // Permite todas as origens (em produção, especifique as origens permitidas)
   credentials: true,
 });
+
+app.register(fastifyCookie);
 
 app.register(fastifyJwt, {
   secret: env.JWT_SECRET,
@@ -26,6 +30,24 @@ app.register(fastifyJwt, {
     signed: false,
   },
 })
+
+// Decorator para adicionar refresh token em cookie
+app.decorateReply("setRefreshToken", async function(this: FastifyReply, userId: string) {
+  const refreshToken = await this.jwtSign({}, {
+    sign: {
+      sub: userId,
+      expiresIn: "7d", // Refresh token dura 7 dias
+    }
+  });
+  
+  this.setCookie("refreshToken", refreshToken, {
+    path: "/",
+    secure: env.NODE_ENV === "production", // Apenas HTTPS em produção
+    httpOnly: true,
+    sameSite: "lax",
+    maxAge: 7 * 24 * 60 * 60, // 7 dias em segundos
+  });
+});
 
 app.register(adminRoutes);
 app.register(clientRoutes);
