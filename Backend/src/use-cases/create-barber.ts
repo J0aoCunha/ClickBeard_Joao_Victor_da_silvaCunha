@@ -21,7 +21,6 @@ export class CreateBarberUseCase {
             nome: name,
             idade: age,
             data_contratacao: new Date(),
-            criado_por: created_by
         }, created_by)
 
        return {barber}

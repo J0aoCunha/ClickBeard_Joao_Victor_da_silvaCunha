@@ -23,17 +23,11 @@ export class ConnectBarberSpecialtyUseCase {
     barbeiro_id,
     especialidade_id,
   }: ConnectBarberSpecialtyRequest): Promise<ConnectBarberSpecialtyResponse> {
-    // Verificar se o barbeiro existe
-    const barber = await this.barberRepository.findById(barbeiro_id);
-    if (!barber) {
-      throw new Error('Barbeiro não encontrado');
-    }
+    // Verificar se o barbeiro existe (o repository lança erro se não encontrar)
+    await this.barberRepository.findById(barbeiro_id);
 
-    // Verificar se a especialidade existe
-    const specialty = await this.specialtiesRepository.findById(especialidade_id);
-    if (!specialty) {
-      throw new Error('Especialidade não encontrada');
-    }
+    // Verificar se a especialidade existe (o repository lança erro se não encontrar)
+    await this.specialtiesRepository.findById(especialidade_id);
 
     // Conectar barbeiro com especialidade
     await this.barberSpecialtiesRepository.connectBarberSpecialty({

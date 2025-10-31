@@ -28,7 +28,27 @@ export class CreateAppointmentUseCase {
     data,
     hora,
   }: CreateAppointmentRequest): Promise<CreateAppointmentResponse> {
-    const dateTime = new Date(`${data}T${hora}`);
+    // Parsear data e hora manualmente para evitar problemas de fuso horário
+    // Formato esperado: data = "YYYY-MM-DD", hora = "HH:MM"
+    const [ano, mes, dia] = data.split('-').map(Number);
+    const [horas, minutos] = hora.split(':').map(Number);
+    
+    // Criar data no horário local (não UTC) para evitar problemas de conversão
+    const dateTime = new Date(ano, mes - 1, dia, horas, minutos, 0, 0);
+    
+    // Validar se a data foi criada corretamente
+    if (isNaN(dateTime.getTime())) {
+      throw new Error('Data ou hora inválida. Use o formato: data "YYYY-MM-DD" e hora "HH:MM"');
+    }
+    
+    // Validar se a data criada corresponde à data fornecida (para evitar problemas de parse)
+    if (dateTime.getFullYear() !== ano || 
+        dateTime.getMonth() !== (mes - 1) || 
+        dateTime.getDate() !== dia ||
+        dateTime.getHours() !== horas ||
+        dateTime.getMinutes() !== minutos) {
+      throw new Error('Data ou hora inválida. Verifique os valores fornecidos.');
+    }
 
     DateValidations.validateBusinessHours(dateTime);
     DateValidations.validateFutureDate(dateTime);
@@ -39,8 +59,7 @@ export class CreateAppointmentUseCase {
     }
 
     const conflito = await this.appointmentsRepository.verifyConflict(
-      data,
-      hora,
+      dateTime,
       barbeiro_especialidade_id
     );
 
