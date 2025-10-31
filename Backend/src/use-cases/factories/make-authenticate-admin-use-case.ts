@@ -1,6 +1,6 @@
 
-import { PrismaAdminRepository } from "@/repositories/prisma-repositories/prisma-admin-repository";
-import { AuthenticateAdminUseCase } from "../../authenticate-admin";
+import { PrismaAdminRepository } from "../../repositories/prisma-repositories/prisma-admin-repository";
+import { AuthenticateAdminUseCase } from "../authenticate-admin";
 
 export function makeAuthenticateAdminUseCase() {
     const prismaAdminRepository = new PrismaAdminRepository();

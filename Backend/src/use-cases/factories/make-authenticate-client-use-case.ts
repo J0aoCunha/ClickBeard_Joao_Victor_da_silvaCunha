@@ -1,10 +1,10 @@
+import { PrismaClientRepository } from "../../repositories/prisma-repositories/prisma-client-repository";
+import { AuthenticateUseCase } from "../authenticate-client";
 
-import { PrismaClientRepository } from "@/repositories/prisma-repositories/prisma-client-repository";
-import { AuthenticateClientUseCase } from "../../authenticate-client";
 
 export function makeAuthenticateClientUseCase() {
     const prismaClientRepository = new PrismaClientRepository();
-    const authenticateClientUseCase = new AuthenticateClientUseCase(prismaClientRepository);
+    const authenticateCase = new AuthenticateUseCase(prismaClientRepository);
 
-    return authenticateClientUseCase;
+    return authenticateCase;
 }

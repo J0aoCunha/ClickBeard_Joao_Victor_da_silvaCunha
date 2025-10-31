@@ -8,7 +8,7 @@ interface AuthenticateClientUseCaseRequest{
 }
 
 interface  AuthenticateClientUseCaseResponse {
-    cliente: clientes
+    client: clientes
 }
 
 
@@ -19,19 +19,19 @@ export class AuthenticateUseCase{
 
     async execute({email, password}:AuthenticateClientUseCaseRequest): Promise<AuthenticateClientUseCaseResponse>{
 
-        const cliente = await this.clientsRepository.findByEmail(email)
+        const client = await this.clientsRepository.findByEmail(email)
 
-        if(!cliente){
+        if(!client){
             throw new Error("User not found")
         }
 
-        const password_hash = cliente.senha
+        const password_hash = client.senha
         const doesPasswordMatches = await compare(password, password_hash)
 
         if(!doesPasswordMatches){
             throw new Error("User not found")
         }
 
-        return {cliente}
+        return {client}
     }
 }

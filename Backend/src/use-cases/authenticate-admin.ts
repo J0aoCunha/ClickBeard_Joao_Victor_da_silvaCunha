@@ -1,5 +1,5 @@
 import { compare } from "bcryptjs";
-import type { IClientRepository } from "../repositories/DTOclient";
+import type { IAdminRepository } from "../repositories/DTOadmin";
 import type { administradores } from "@prisma/client";
 
 interface AuthenticateAdminUseCaseRequest{
@@ -13,12 +13,12 @@ interface  AuthenticateAdminUseCaseResponse {
 
 class AuthenticateAdminUseCase{
     constructor(
-        private clientsRepository: IClientRepository
+        private adminRepository: IAdminRepository
     ){}
 
     async execute({email, password}:AuthenticateAdminUseCaseRequest): Promise<AuthenticateAdminUseCaseResponse>{
 
-        const admin = await this.clientsRepository.findByEmail(email)
+        const admin = await this.adminRepository.findByEmail(email)
 
         if(!admin){
             throw new Error("User not found")
