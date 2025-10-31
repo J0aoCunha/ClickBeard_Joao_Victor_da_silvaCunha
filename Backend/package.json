@@ -16,7 +16,7 @@
     "fastify": "^5.6.1",
     "jsonwebtoken": "^9.0.0",
     "@fastify/jwt": "^9.0.0",
-    "@fastify/cookie": "^9.1.0",
+    "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^11.0.0",
     "zod": "^4.1.12"
   },
