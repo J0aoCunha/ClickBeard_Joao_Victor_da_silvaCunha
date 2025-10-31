@@ -28,11 +28,17 @@ class PrismaAppointmentRepository implements IAppointmentRepository {
     return appointment;
   }
 
-  async verifyConflict(date: string, time: string, barbeiro_especialidade_id: number){
+  async verifyConflict(dateTime: Date, barbeiro_especialidade_id: number){
+    // Buscar agendamentos que possam ter conflito de horário
+    // Considera que pode haver overlap de horários baseado na duração do serviço
+    // Por enquanto, verifica se há agendamento no mesmo horário exato
     const appointment = await prisma.agendamentos.findFirst({
       where: {
-        data_horario: `${date}T${time}`,
-        barbeiro_especialidade_id: barbeiro_especialidade_id
+        barbeiro_especialidade_id: barbeiro_especialidade_id,
+        status: {
+          not: 'cancelado' // Ignora agendamentos cancelados
+        },
+        data_horario: dateTime
       }
     });
 

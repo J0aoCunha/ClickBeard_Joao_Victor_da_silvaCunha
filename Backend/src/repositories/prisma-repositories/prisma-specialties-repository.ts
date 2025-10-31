@@ -19,7 +19,7 @@ class PrismaSpecialtiesRepository implements ISpecialtiesRepository {
   }
 
   async findByName(name: string){
-    const specialty = await prisma.especialidades.findUniqueOrThrow({
+    const specialty = await prisma.especialidades.findUnique({
       where: {
         nome: name
       }

@@ -4,13 +4,11 @@ import { prisma } from "../../lib/prisma";
 
 class PrismaBarberRespository implements IBarberRepository {
 
- async create(data: Prisma.barbeirosCreateInput, adminId: number) {
+ async create(data: Prisma.barbeirosUncheckedCreateInput, adminId: number) {
     const barber = await prisma.barbeiros.create({
       data: {
         ...data,
-        administradores:{
-          connect: { id: adminId }
-        }
+        criado_por: adminId
       }
     })
 
@@ -18,11 +16,22 @@ class PrismaBarberRespository implements IBarberRepository {
   }
 
  async findById(id: number) {
-    const barber = await prisma.barbeiros.findUniqueOrThrow({
+    // Validar se o ID é válido
+    if (id === undefined || id === null || isNaN(Number(id)) || Number(id) <= 0) {
+      throw new Error('ID do barbeiro é inválido');
+    }
+    
+    const numericId = Number(id);
+
+    const barber = await prisma.barbeiros.findUnique({
       where: {
-        id
+        id: numericId
       }
     })
+
+    if (!barber) {
+      throw new Error('Barbeiro não encontrado');
+    }
 
     return barber
   }

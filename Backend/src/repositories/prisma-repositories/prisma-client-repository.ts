@@ -23,12 +23,37 @@ class PrismaClientRepository implements IClientRepository {
     return client
   }
 
-  async findByEmail(email: string) {
-    const client = await prisma.clientes.findUniqueOrThrow({
+  async findByIdWithAppointments(id: number) {
+    const client = await prisma.clientes.findUnique({
       where: {
-        email
+        id
+      },
+      include: {
+        agendamentos: {
+          orderBy: {
+            data_horario: 'desc'
+          },
+          include: {
+            barbeiro_especialidade: {
+              include: {
+                barbeiros: true,
+                especialidades: true
+              }
+            }
+          }
+        }
       }
     })
+
+    return client
+  }
+
+  async findByEmail(email: string) {
+  const client = await prisma.clientes.findUnique({
+        where: {
+          email
+        }
+  })
 
     return client
   }
