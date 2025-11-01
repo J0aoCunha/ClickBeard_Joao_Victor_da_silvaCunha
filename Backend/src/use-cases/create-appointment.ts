@@ -72,16 +72,18 @@ export class CreateAppointmentUseCase {
       throw new Error('Combinação barbeiro-especialidade não encontrada');
     }
 
+    const especialidade = await this.specialtiesRepository.findById(barberSpecialty.especialidade_id);
+    
+    // Verificar conflito por barbeiro, não por especialidade
     const conflito = await this.appointmentsRepository.verifyConflict(
       dateTime,
-      barbeiro_especialidade_id
+      barberSpecialty.barbeiro_id,
+      especialidade.duracao_minutos
     );
 
     if (conflito) {
       throw new Error('Já existe um agendamento neste horário para este barbeiro');
     }
-
-    const especialidade = await this.specialtiesRepository.findById(barberSpecialty.especialidade_id);
     
     const horaFim = new Date(dateTime);
     horaFim.setMinutes(horaFim.getMinutes() + especialidade.duracao_minutos);
