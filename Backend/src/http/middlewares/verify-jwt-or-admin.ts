@@ -16,10 +16,16 @@ export async function verifyJWTOrAdmin(request: FastifyRequest, reply: FastifyRe
         
         // Verifica se é admin
         const adminRepository = new PrismaAdminRepository();
-        const admin = await adminRepository.findById(userId);
+        let admin = null;
+        try {
+            admin = await adminRepository.findById(userId);
+        } catch (error) {
+            // Se não encontrar admin, não é problema, pode ser cliente
+            admin = null;
+        }
         
-        // Adiciona informação se é admin ao request.user
-        (request.user as any).isAdmin = !!admin;
+        // Adiciona informação se é admin ao request.user (true/false explícito)
+        (request.user as any).isAdmin = admin !== null;
         (request.user as any).userId = userId;
         
     } catch (error) {

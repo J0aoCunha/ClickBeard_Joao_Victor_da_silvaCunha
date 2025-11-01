@@ -10,9 +10,16 @@ export async function cancelAppointmentController(request: FastifyRequest, reply
 
     const { appointment_id } = cancelAppointmentParamsSchema.parse(request.params);
 
-    // Pegar cliente_id do token JWT
-    const cliente_id = Number(request.user.sub);
-    const isAdmin = (request.user as any).isAdmin || false;
+    // Pegar cliente_id do token JWT (o middleware já verificou e adicionou isAdmin)
+    const userId = Number(request.user.sub);
+    
+    if (!userId || isNaN(userId)) {
+        return reply.status(401).send({ message: "Unauthorized" });
+    }
+    
+    // Verificar se é admin através do middleware (garantir que seja boolean)
+    const isAdmin = (request.user as any).isAdmin === true;
+    const cliente_id = userId;
 
     try {
         const cancelAppointmentUseCase = makeCancelAppointmentUseCase();

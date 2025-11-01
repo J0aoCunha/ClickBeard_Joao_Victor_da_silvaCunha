@@ -25,8 +25,12 @@ export class CancelAppointmentUseCase {
       throw new Error('Agendamento não encontrado');
     }
 
+    // Garantir que os IDs sejam números para comparação correta
+    const appointmentClienteId = Number(appointment.cliente_id);
+    const requestClienteId = Number(cliente_id);
+
     // Verificar se é o dono do agendamento OU se é admin
-    if (!isAdmin && appointment.cliente_id !== cliente_id) {
+    if (!isAdmin && appointmentClienteId !== requestClienteId) {
       throw new Error('Você não tem permissão para cancelar este agendamento');
     }
 
@@ -38,7 +42,8 @@ export class CancelAppointmentUseCase {
     // Verificar se o agendamento é futuro (admins podem cancelar passados)
     if (!isAdmin) {
       const appointmentDate = new Date(appointment.data_horario);
-      if (appointmentDate < new Date()) {
+      const now = new Date();
+      if (appointmentDate < now) {
         throw new Error('Não é possível cancelar agendamentos passados');
       }
     }
