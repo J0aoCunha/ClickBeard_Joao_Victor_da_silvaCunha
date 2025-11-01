@@ -8,6 +8,10 @@ export async function verifyJWTOrAdmin(request: FastifyRequest, reply: FastifyRe
         // Verifica se o JWT é válido
         await request.jwtVerify();
         
+        if (!request.user || !request.user.sub) {
+            return reply.status(401).send({ message: "Unauthorized" });
+        }
+        
         const userId = Number(request.user.sub);
         
         if (!userId || isNaN(userId)) {
@@ -17,6 +21,7 @@ export async function verifyJWTOrAdmin(request: FastifyRequest, reply: FastifyRe
         // Verifica se é admin
         const adminRepository = new PrismaAdminRepository();
         let admin = null;
+        
         try {
             admin = await adminRepository.findById(userId);
         } catch (error) {
@@ -25,7 +30,8 @@ export async function verifyJWTOrAdmin(request: FastifyRequest, reply: FastifyRe
         }
         
         // Adiciona informação se é admin ao request.user (true/false explícito)
-        (request.user as any).isAdmin = admin !== null;
+        // Garantir que sempre seja um boolean
+        (request.user as any).isAdmin = admin !== null ? true : false;
         (request.user as any).userId = userId;
         
     } catch (error) {

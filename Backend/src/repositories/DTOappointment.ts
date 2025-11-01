@@ -1,6 +1,11 @@
 import type { agendamentos, Prisma } from "@prisma/client";
 
+/**
+ * Interface para o repositório de agendamentos
+ * Define os métodos necessários para operações de CRUD e validações
+ */
 interface IAppointmentRepository {
+
   create(data: Prisma.agendamentosUncheckedCreateInput): Promise<agendamentos>;
   listAll(): Promise<agendamentos[]>;
   findByClienteId(cliente_id: number): Promise<agendamentos[]>;

@@ -47,10 +47,15 @@ export const appointmentService = {
   },
 
   async cancel(appointmentId: number) {
-    const response = await api.patch(
-      `/appointment/${appointmentId}/cancel`
-    )
-    return response.data
+    try {
+      const response = await api.patch(
+        `/appointment/${appointmentId}/cancel`
+      )
+      return response.data
+    } catch (error: any) {
+      // Re-throw para que o componente possa tratar
+      throw error
+    }
   },
 
   async getOccupiedTimes(date: string, barbeiro_id: number) {

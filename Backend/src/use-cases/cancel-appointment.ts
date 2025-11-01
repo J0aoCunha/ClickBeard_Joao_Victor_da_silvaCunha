@@ -21,6 +21,7 @@ export class CancelAppointmentUseCase {
   }: CancelAppointmentRequest): Promise<CancelAppointmentResponse> {
     // Verificar se o agendamento existe
     const appointment = await this.appointmentsRepository.findById(appointment_id);
+    
     if (!appointment) {
       throw new Error('Agendamento não encontrado');
     }

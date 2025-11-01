@@ -16,6 +16,8 @@ const app = fastify();
 app.register(fastifyCors, {
   origin: true, // Permite todas as origens (em produção, especifique as origens permitidas)
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 });
 
 app.register(fastifyCookie);
