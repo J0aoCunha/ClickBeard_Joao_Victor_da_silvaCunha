@@ -1,4 +1,3 @@
-import type { barbeiro_especialidade } from "@prisma/client";
 import type { IBarberSpecialtiesRepository } from "../repositories/DTObarberSpecialties";
 
 interface ListBarberSpecialtiesRequest {
@@ -6,7 +5,7 @@ interface ListBarberSpecialtiesRequest {
 }
 
 interface ListBarberSpecialtiesResponse {
-  specialties: barbeiro_especialidade[];
+  specialties: Awaited<ReturnType<IBarberSpecialtiesRepository['listBarberBySpecialty']>>;
 }
 
 export class ListBarberSpecialtiesUseCase {

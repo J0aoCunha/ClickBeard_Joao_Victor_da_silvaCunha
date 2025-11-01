@@ -14,6 +14,9 @@ class PrismaBarberSpecialtiesRepository implements IBarberSpecialtiesRepository 
     const specialties = await prisma.barbeiro_especialidade.findMany({
       where: {
         barbeiro_id: barberId
+      },
+      include: {
+        especialidades: true
       }
     })
     
