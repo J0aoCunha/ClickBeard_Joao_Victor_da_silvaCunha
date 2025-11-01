@@ -42,6 +42,23 @@ class PrismaBarberRespository implements IBarberRepository {
    return barbers
   }
 
+  async searchByName(query: string) {
+    if (!query || query.trim() === "") {
+      return this.list()
+    }
+    
+    const barbers = await prisma.barbeiros.findMany({
+      where: {
+        nome: {
+          contains: query,
+          mode: 'insensitive'
+        }
+      }
+    })
+    
+    return barbers
+  }
+
 }
 
 export { PrismaBarberRespository }

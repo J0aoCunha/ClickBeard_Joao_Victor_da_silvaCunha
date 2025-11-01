@@ -5,10 +5,11 @@ import { makeSearchBarbersUseCase } from "../../../use-cases/factories/make-sear
 
 export async function searchBarbersController(request: FastifyRequest, reply: FastifyReply) {
     const searchBarbersQuerySchema = z.object({
-        query: z.string().min(1, "Query de busca não pode estar vazia").max(100, "Query de busca deve ter no máximo 100 caracteres"),
+        query: z.string().max(100, "Query de busca deve ter no máximo 100 caracteres").optional(),
     });
 
-    const { query } = searchBarbersQuerySchema.parse(request.query);
+    const queryParams = searchBarbersQuerySchema.parse(request.query);
+    const query = queryParams.query || "";
 
     const searchBarbersUseCase = makeSearchBarbersUseCase();
     const { barbers } = await searchBarbersUseCase.execute({ query });
